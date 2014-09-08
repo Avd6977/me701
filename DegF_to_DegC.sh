@@ -9,6 +9,11 @@ echo "Input degrees Fahrenheit you wish to convert"
 read degF
 
 declare degC
-let "degC = (degF - 32) * 5 / 9"
-
-echo "Celcius = " $degC
+degC=$(bc <<< "("$degF"-32)*0.5555")
+Kelvin=$(bc <<< $degC"+273.15")
+if [ $Kelvin '<' 0 ]; then
+	echo "This temperature is invalid, must be above absolute 0"
+else
+	echo "Celcius = " $degC
+	echo "Kel = "$Kelvin
+fi
