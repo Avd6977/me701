@@ -4,9 +4,16 @@
 # ME 701
 # Convert degrees Fahrenheit to degrees Celcius
 
-echo "Convert degrees Fahrenheit into degrees Celcius"
-echo "Input degrees Fahrenheit you wish to convert"
-read degF
+# Determine how the degF temperature is input
+if [ $# -eq 0 ];
+then
+	echo "Convert degrees Fahrenheit into degrees Celcius"
+	echo "Input degrees Fahrenheit you wish to convert"
+	read degF
+elif [ $# -eq 1 ];
+then
+	degF=$1
+fi
 
 declare degC
 degC=$(bc <<< "("$degF"-32)*0.5555")
