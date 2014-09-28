@@ -1,0 +1,3 @@
+Back out $# times from a directory
+
+SAVED AS backout.sh
