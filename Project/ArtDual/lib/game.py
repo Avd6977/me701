@@ -184,14 +184,13 @@ class Game(object):
                 elif (event.key == K_LEFT) and (len(self.fade) == 0):
                     if self.turn == "left":
                         self.flip_count += 1
-                        print self.flip_count
                         self.tanks[0].flip_tank()
                         self.guns[0].flip_gun(self.flip_count, self.turn)
                     else:
                         self.flip_count += 1
                         self.tanks[1].flip_tank()
                         self.guns[1].flip_gun(self.flip_count, self.turn)
-
+                        
         if ((time.time() - self.timer) > 5) and (self.shell_fired == False):
             self.control_panel.check_mouse_event(self)
 
@@ -271,6 +270,7 @@ class Game(object):
         else:
             self.turn = "left"
         self.shell_fired = False
+        self.flip_count = 0
         self.control_panel.display = True
         self.timer = time.time()
         self.control_panel.update_wind = True

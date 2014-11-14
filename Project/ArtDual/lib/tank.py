@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import pygame, math
+import numpy as np
 from load_save import load_image
 from explosion import *
 
@@ -78,35 +79,43 @@ class Gun(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(self.image, 1, 0)
         self.base_image = self.image
 
-    def turn(self, adjustment):
+    def turn(self, adjustment, count):
         self.angle += adjustment
         if self.angle > 90:
             self.angle = 90
         elif self.angle < 0:
             self.angle = 0
        
-        if self.position == "left":
+        if (self.position == "left") and (count%2 == 0):
             old_rect = self.rect.bottomleft        
             self.image = pygame.transform.rotate(self.base_image, self.angle)
             self.rect = self.image.get_rect()
             self.rect.bottomleft = old_rect
-        elif self.position == "right":
+        elif self.position == "left" and (count%2 == 1):
             old_rect = self.rect.bottomright        
             self.image = pygame.transform.rotate(self.base_image, 0 - self.angle)
+            self.rect = self.image.get_rect()
+            self.rect.bottomright = old_rect
+        elif self.position == "right" and (count%2 == 0):
+            old_rect = self.rect.bottomright        
+            self.image = pygame.transform.rotate(self.base_image, 0 - self.angle)
+            self.rect = self.image.get_rect()
+            self.rect.bottomright = old_rect
+        elif self.position == "right" and (count%2 == 1):
+            old_rect = self.rect.bottomright        
+            self.image = pygame.transform.rotate(self.base_image, self.angle)
             self.rect = self.image.get_rect()
             self.rect.bottomright = old_rect
 
     def update(self, Game):
         pass
     
-    def flip_gun(self, count, turn):
+    def flip_gun(self, count, turn_side):
         self.image = pygame.transform.flip(self.image, True, False)
-        if turn == "left":
-            x_center = [80, 122]
-            self.rect.center = (x_center[(count%2)],584-self.ground[80])
+        if turn_side == "left":
+            self.rect.center = (self.rect.centerx-int((40*math.cos(math.radians(self.angle))))*((-1)**((1+count)%2)), self.rect.centery) #(x_center[(count%2)], 584-self.ground[x_center[(count%2)]])
         else:
-            x_center = [680, 720]
-            self.rect.center = (x_center[(count%2)],584-self.ground[680])
+            self.rect.center = (self.rect.centerx+int((40*math.cos(math.radians(self.angle))))*((-1)**((1+count)%2)), self.rect.centery)
 
 class Shell(pygame.sprite.Sprite):
     """ The Shell object """
@@ -133,9 +142,18 @@ class Shell(pygame.sprite.Sprite):
 
     def update(self, Game):
         self.pos_x += self.speed_x
-        if (self.pos_x >= 779) or (self.pos_x <= 21):
+        if (self.pos_x >= 779) and (self.from_tank.position == "left"):
             Game.sprites.remove(self)
             Game.change_turn()
+        elif (self.pos_x <= 21) and (self.from_tank.position == "right"):
+            Game.sprites.remove(self)
+            Game.change_turn()
+        elif (self.pos_x >= 779) and (self.from_tank.position == "right"):
+            self.pos_x = 779
+            self.pos_x -= self.speed_x
+        elif (self.pos_x <= 21) and (self.from_tank.position == "left"):
+            self.pos_x = 21
+            self.pos_x += self.speed_x
         self.pos_y += self.speed_y
         if (self.pos_y >= 590):
             Game.sprites.remove(self)

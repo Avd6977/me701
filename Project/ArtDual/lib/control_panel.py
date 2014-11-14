@@ -190,12 +190,12 @@ class Control_panel(object):
                     if self.button_up_barrel_rect.collidepoint(pos) == True:
                         check_sound()
                         self.screen.blit(self.button_shadowed, self.button_up_barrel_rect.topleft, None, BLEND_RGB_MULT)
-                        tank.gun.turn(1)
+                        tank.gun.turn(1, Game.flip_count)
                         return
                     elif self.button_down_barrel_rect.collidepoint(pos) == True:
                         check_sound()
                         self.screen.blit(self.button_shadowed, self.button_down_barrel_rect.topleft, None, BLEND_RGB_MULT)
-                        tank.gun.turn(-1)
+                        tank.gun.turn(-1, Game.flip_count)
                         return
 
                     if self.button_up_powder_rect.collidepoint(pos) == True:
