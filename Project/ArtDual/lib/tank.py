@@ -102,10 +102,10 @@ class Gun(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.bottomright = old_rect
         elif self.position == "right" and (count%2 == 1):
-            old_rect = self.rect.bottomright        
+            old_rect = self.rect.bottomleft       
             self.image = pygame.transform.rotate(self.base_image, self.angle)
             self.rect = self.image.get_rect()
-            self.rect.bottomright = old_rect
+            self.rect.bottomleft = old_rect
 
     def update(self, Game):
         pass
@@ -127,6 +127,7 @@ class Shell(pygame.sprite.Sprite):
         self.image = Shell.image
         self.rect = self.image.get_rect()
         self.from_tank = tank
+        self.bounce_pos = 0
         self.target = tank.ennemy
         if tank.position == "left":
             self.rect.center = tank.gun.rect.topright
@@ -141,7 +142,20 @@ class Shell(pygame.sprite.Sprite):
         self.weight = 55
 
     def update(self, Game):
-        self.pos_x += self.speed_x
+        if (self.bounce_pos == 0):
+            if (self.rect.centerx >= 98) and (self.from_tank.position == "left"):
+                self.pos_x += self.speed_x
+            elif (self.rect.centerx < 98) and (self.from_tank.position == "left"):
+                self.pos_x -= self.speed_x
+            elif (self.rect.centerx <= 700) and (self.from_tank.position == "right"):
+                self.pos_x += self.speed_x
+            elif (self.rect.centerx > 700) and (self.from_tank.position == "right"):
+                self.pos_x -= self.speed_x
+        else:
+            if (self.from_tank.position == "left"):
+                self.pos_x += self.speed_x
+            elif (self.from_tank.position == "right"):
+                self.pos_x += self.speed_x
         if (self.pos_x >= 779) and (self.from_tank.position == "left"):
             Game.sprites.remove(self)
             Game.change_turn()
@@ -150,9 +164,11 @@ class Shell(pygame.sprite.Sprite):
             Game.change_turn()
         elif (self.pos_x >= 779) and (self.from_tank.position == "right"):
             self.pos_x = 779
-            self.pos_x -= self.speed_x
+            self.bounce_pos = 1
+            self.pos_x += self.speed_x
         elif (self.pos_x <= 21) and (self.from_tank.position == "left"):
             self.pos_x = 21
+            self.bounce_pos = 1
             self.pos_x += self.speed_x
         self.pos_y += self.speed_y
         if (self.pos_y >= 590):
