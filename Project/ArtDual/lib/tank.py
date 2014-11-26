@@ -143,9 +143,9 @@ class Shell(pygame.sprite.Sprite):
 
     def update(self, Game):
         if (self.bounce_pos == 0):
-            if (self.rect.centerx >= 98) and (self.from_tank.position == "left"):
+            if (self.rect.centerx >= 103) and (self.from_tank.position == "left"):
                 self.pos_x += self.speed_x
-            elif (self.rect.centerx < 98) and (self.from_tank.position == "left"):
+            elif (self.rect.centerx < 103) and (self.from_tank.position == "left"):
                 self.pos_x -= self.speed_x
             elif (self.rect.centerx <= 700) and (self.from_tank.position == "right"):
                 self.pos_x += self.speed_x
